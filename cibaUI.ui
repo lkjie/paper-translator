@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>CiBaTran</class>
+ <widget class="QWidget" name="CiBaTran">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>674</width>
-    <height>295</height>
+    <width>1200</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -49,6 +49,13 @@
      </item>
      <item row="2" column="1">
       <layout class="QVBoxLayout" name="verticalLayout_1">
+       <item>
+        <widget class="QCheckBox" name="checkBox">
+         <property name="text">
+          <string>CheckBox</string>
+         </property>
+        </widget>
+       </item>
        <item>
         <widget class="QPushButton" name="pushButton">
          <property name="sizePolicy">
