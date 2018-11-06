@@ -39,5 +39,13 @@
     "/home/liwenjie/Documents/Paper-translation 论文翻译小助手.zip": "/ home/liwenjie/Documents/Paper-translation paper translation assistant. Zip",
     "/home/liwenjie/liwenjie/projects/paper-translation/doc/Paper-translation 论文翻译小助手.md": "/ home/liwenjie/projects/paper-translation/doc/Paper-translation paper translation assistant. Md",
     "/home/liwenjie/liwenjie/projects/paper-translation/Paper-translation 论文翻译小助手.zip": "/ home/liwenjie/projects/paper-translation/Paper-translation paper translation assistant. Zip",
-    "README.md": "README.md"
+    "README.md": "README.md",
+    "- 检测剪切板，实时翻译\n- 自动替换论文中的换行符\n- 对英文选择后，右下小窗口会出现选择英文的解释\n![Alt text](./doc/1541495491986.png)\n- 翻译的句子会以json格式保存在当前目录下translated.json文件中\n- 自动置顶": "After checking the clipping board and automatically replacing the line pairs in the paper in real time translation, An explanation for choosing English appears in the lower right window! [Alt text] (. / doc/1541495491986.png) translated sentences will be saved in json format in the translated.json file in the current directory to set the top automatically",
+    "![Alt text](./doc/1541495491986.png)": "[备选案文](/doc/1541495491986.ng)",
+    "Check the clipping board, real-time translate-automatically replace the newline characters in the paper-after the English selection, An explanation of the choice of English appears in the lower right window-the translated sentences are saved in json format in the translated.json file in the current directory-auto top": "检查剪贴板，实时翻译-自动替换文件中的换行符-在英文选择之后，右下角显示对英语选择的解释-翻译后的句子以json格式保存在当前目录中的translated.json文件中-autotop。",
+    "explanation": "n. 解释;说明;辩解;（消除误会后）和解;",
+    "after the English selection, An ": "在英语选集之后，",
+    "translated sentences": "翻译句",
+    "explain": "vt.& vi. 讲解，解释;\nvt. 说明…的原因，辩解;\nvi. 说明，解释，辩解;",
+    "of": "prep. 关于;属于…的;由…制成;\naux. 助动词  [非标准用语、方言] =have [主用于虚拟语气];"
 }

@@ -1,8 +1,8 @@
 # Paper-translation 论文翻译小助手
 	
 Automatic translation of Chinese and English papers
-自动翻译中英文论文
-复制即可翻译
+
+自动翻译中英文论文，复制即可翻译
 
 ## 使用说明
 
@@ -25,7 +25,7 @@ python paperTran.py
 - 自动置顶
 
 
-## requirement
+## Requirement
 Based on PyQt5, python3
 
 install by pip just like:
@@ -33,13 +33,16 @@ install by pip just like:
 pip install clipboard pyqt5
 ```
 
-## how to run
+## How to run
 run:
 ```bash
 python paperTran.py
 ```
 
-## features
+## Features
 - detect clipboard
 - auto replace ‘\n’
+- explain the choice 
+- saved translated sentences in translated.json file
+- auto top
 
