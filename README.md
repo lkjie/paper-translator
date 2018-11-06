@@ -4,6 +4,26 @@ Automatic translation of Chinese and English papers
 自动翻译中英文论文
 复制即可翻译
 
+## 使用说明
+
+1. 首先需要安装python，推荐[anaconda][1]，因为PyQt5需要python3的支持，请选择python3的anaconda
+2. 安装完python后，利用python自带的包管理工具pip安装所需依赖
+```bash
+pip install clipboard pyqt5
+```
+3. 完成后运行目录下的py脚本即可
+```bash
+python paperTran.py
+```
+
+## 功能
+- 检测剪切板，实时翻译
+- 自动替换论文中的换行符
+- 对英文选择后，右下小窗口会出现选择英文的解释
+![Alt text](./doc/1541495491986.png)
+- 翻译的句子会以json格式保存在当前目录下translated.json文件中
+
+
 ## requirement
 Based on PyQt5, python3
 
@@ -11,8 +31,6 @@ install by pip just like:
 ```bash
 pip install clipboard pyqt5
 ```
-
-需要PyQt5, python3的支持，利用pip安装即可
 
 ## how to run
 run:
@@ -24,7 +42,3 @@ python paperTran.py
 - detect clipboard
 - auto replace ‘\n’
 
-![Alt text](./1541489044606.png)
-
-- 检测剪切板
-- 自动替换论文中的换行符
