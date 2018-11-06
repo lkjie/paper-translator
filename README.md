@@ -22,6 +22,7 @@ python paperTran.py
 - 对英文选择后，右下小窗口会出现选择英文的解释
 ![Alt text](./doc/1541495491986.png)
 - 翻译的句子会以json格式保存在当前目录下translated.json文件中
+- 自动置顶
 
 
 ## requirement
