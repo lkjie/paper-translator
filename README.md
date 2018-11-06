@@ -1,4 +1,4 @@
-# CiBa-translation
+# Paper-translation
 translate chinese and english automatic
 
 ## requirement
@@ -12,5 +12,5 @@ pip install clipboard pyqt5
 ## how to run
 run:
 ```bash
-python ciba.py
+python Paper.py
 ```

@@ -5,9 +5,9 @@ __author__ = 'liwenjie'
 from PyQt5 import QtCore, QtGui, QtWidgets
 import sys
 
-from cibaUI import Ui_CiBaTran
+from PaperTranUI import Ui_PaperTran
 
-class Form(QtWidgets.QWidget, Ui_CiBaTran):
+class Form(QtWidgets.QWidget, Ui_PaperTran):
     def __init__(self):
         super(Form, self).__init__()
         self.setupUi(self)

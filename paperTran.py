@@ -9,7 +9,7 @@ import requests
 import json
 import os
 
-from cibaUI import Ui_CiBaTran
+from PaperTranUI import Ui_PaperTran
 
 
 try:
@@ -18,7 +18,7 @@ except Exception as e:
     translated = {}
 
 
-class Form(QtWidgets.QWidget, Ui_CiBaTran):
+class Form(QtWidgets.QWidget, Ui_PaperTran):
 
     def __init__(self):
         super(Form, self).__init__()
@@ -41,14 +41,14 @@ class Form(QtWidgets.QWidget, Ui_CiBaTran):
         self.checkBox.toggle()
         self.checkBox.stateChanged.connect(self.timer.changeDetect)
 
-    def retranslateUi(self, CiBaTran):
+    def retranslateUi(self, PaperTran):
         _translate = QtCore.QCoreApplication.translate
-        CiBaTran.setWindowTitle(_translate("CiBaTran", "词霸翻译"))
-        self.label.setText(_translate("CiBaTran", "请输入要翻译的英文"))
-        self.pushButton.setText(_translate("CiBaTran", "点击翻译"))
-        self.pushButton_2.setText(_translate("CiBaTran", "清空"))
-        self.label_2.setText(_translate("CiBaTran", "翻译结果"))
-        self.checkBox.setText(_translate("CiBaTran", "检测剪切板"))
+        PaperTran.setWindowTitle(_translate("PaperTran", "论文翻译"))
+        self.label.setText(_translate("PaperTran", "请输入要翻译的英文"))
+        self.pushButton.setText(_translate("PaperTran", "点击翻译"))
+        self.pushButton_2.setText(_translate("PaperTran", "清空"))
+        self.label_2.setText(_translate("PaperTran", "翻译结果"))
+        self.checkBox.setText(_translate("PaperTran", "检测剪切板"))
 
     def setTransText(self, str1):
         self.textEdit_2.clear()
@@ -71,7 +71,7 @@ class Form(QtWidgets.QWidget, Ui_CiBaTran):
 
     def trans(self):
         textData = self.textEdit_1.toPlainText()
-        source, tran_txt = translateByCiBa(textData)
+        source, tran_txt = translateByPaper(textData)
         self.setTransText(tran_txt)
         self.setSourceText(source)
 
@@ -83,7 +83,7 @@ class Form(QtWidgets.QWidget, Ui_CiBaTran):
         # edit.setTextCursor(cursor)
 
 
-def translateByCiBa(textData):
+def translateByPaper(textData):
     results = textData.replace('\n', ' ').replace('- ', '')
     if results in translated:
         return results, translated[textData]
@@ -132,7 +132,7 @@ class MyTimer(QtWidgets.QWidget):
         cursor = self.editor.textCursor()
         textSelected = cursor.selectedText()
         if textSelected:
-            source1, tran_txt1 = translateByCiBa(textSelected)
+            source1, tran_txt1 = translateByPaper(textSelected)
             self.word_trigger.emit(tran_txt1)
 
     def translateSentence(self):
@@ -140,7 +140,7 @@ class MyTimer(QtWidgets.QWidget):
         if not clipText or clipText == self.lastTran:
             return
         self.lastTran = clipText
-        source, tran_txt = translateByCiBa(clipText)
+        source, tran_txt = translateByPaper(clipText)
         self.source_trigger.emit(source)
         self.tran_trigger.emit(tran_txt)
 
