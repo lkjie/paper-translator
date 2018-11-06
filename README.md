@@ -12,6 +12,8 @@ install by pip just like:
 pip install clipboard pyqt5
 ```
 
+需要PyQt5, python3的支持，利用pip安装即可
+
 ## how to run
 run:
 ```bash
