@@ -35,7 +35,8 @@ class Form(QtWidgets.QWidget, Ui_CiBaTran):
         self.pushButton.clicked.connect(self.trans)
         self.pushButton_2.clicked.connect(self.textEdit_1.clear)
         self.timer = MyTimer(self.textEdit_1)
-        self.timer.trigger.connect(self.setSourceAndTransText)
+        self.timer.source_trigger.connect(self.setSourceText)
+        self.timer.tran_trigger.connect(self.setTransText)
         self.timer.word_trigger.connect(self.setWordText)
         self.checkBox.toggle()
         self.checkBox.stateChanged.connect(self.timer.changeDetect)
@@ -75,10 +76,11 @@ class Form(QtWidgets.QWidget, Ui_CiBaTran):
         self.setSourceText(source)
 
     def changeFontSize(self, edit, fontsize=15):
-        cursor = edit.textCursor()
-        edit.selectAll()
-        edit.setFontPointSize(fontsize)
-        edit.setTextCursor(cursor)
+        pass
+        # cursor = edit.textCursor()
+        # edit.selectAll()
+        # edit.setFontPointSize(fontsize)
+        # edit.setTextCursor(cursor)
 
 
 def translateByCiBa(textData):
@@ -103,7 +105,8 @@ def translateByCiBa(textData):
 
 
 class MyTimer(QtWidgets.QWidget):
-    trigger = pyqtSignal(str, str)
+    source_trigger = pyqtSignal(str)
+    tran_trigger = pyqtSignal(str)
     word_trigger = pyqtSignal(str)
     detect = True
 
@@ -115,24 +118,31 @@ class MyTimer(QtWidgets.QWidget):
         self.timer.start()
         # 信号连接到槽
         self.timer.timeout.connect(self.onTimerOut)
+        self.lastTran = ''
 
     # 定义槽
     def onTimerOut(self):
         if not self.detect:
             return
-        textData = self.editor.toPlainText()
-        clipText = pyperclip.paste()
+        self.translateWord()
+        self.translateSentence()
+
+
+    def translateWord(self):
         cursor = self.editor.textCursor()
         textSelected = cursor.selectedText()
-        source1, tran_txt1 = translateByCiBa(textSelected)
-        self.word_trigger.emit(tran_txt1)
-        if not textData and not clipText:
+        if textSelected:
+            source1, tran_txt1 = translateByCiBa(textSelected)
+            self.word_trigger.emit(tran_txt1)
+
+    def translateSentence(self):
+        clipText = pyperclip.paste()
+        if not clipText or clipText == self.lastTran:
             return
-        if not textData or (clipText and clipText not in translated.keys()):
-            textData = clipText
-            self.editor.append(textData)
-        source, tran_txt = translateByCiBa(textData)
-        self.trigger.emit(source, tran_txt)
+        self.lastTran = clipText
+        source, tran_txt = translateByCiBa(clipText)
+        self.source_trigger.emit(source)
+        self.tran_trigger.emit(tran_txt)
 
     def changeDetect(self):
         self.detect = not self.detect
