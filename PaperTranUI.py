@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'PaperUI.ui'
+# Form implementation generated from reading ui file 'PaperTranUI.ui'
 #
 # Created by: PyQt5 UI code generator 5.11.3
 #
@@ -65,6 +65,9 @@ class Ui_PaperTran(object):
         self.label = QtWidgets.QLabel(PaperTran)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 1, 0, 1, 1)
+        self.label_3 = QtWidgets.QLabel(PaperTran)
+        self.label_3.setObjectName("label_3")
+        self.gridLayout.addWidget(self.label_3, 5, 1, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
         self.retranslateUi(PaperTran)
@@ -78,4 +81,5 @@ class Ui_PaperTran(object):
         self.pushButton.setText(_translate("PaperTran", "PushButton"))
         self.pushButton_2.setText(_translate("PaperTran", "PushButton"))
         self.label.setText(_translate("PaperTran", "TextLabel"))
+        self.label_3.setText(_translate("PaperTran", "TextLabel"))
 

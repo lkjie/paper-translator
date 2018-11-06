@@ -47,6 +47,7 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
         self.pushButton_2.setText(_translate("PaperTran", "清空"))
         self.label_2.setText(_translate("PaperTran", "翻译结果"))
         self.checkBox.setText(_translate("PaperTran", "检测剪切板"))
+        self.label_3.setText(_translate("PaperTran", "选择条目翻译结果"))
 
     def setTransText(self, str1):
         self.textEdit_2.clear()
