@@ -11,7 +11,6 @@ import os
 
 from PaperTranUI import Ui_PaperTran
 
-
 try:
     translated = json.load(open('translated.json'))
 except Exception as e:
@@ -19,7 +18,6 @@ except Exception as e:
 
 
 class Form(QtWidgets.QWidget, Ui_PaperTran):
-
     def __init__(self):
         super(Form, self).__init__()
         self.setupUi(self)
@@ -97,7 +95,7 @@ def translateByPaper(textData):
         return results, ''
     # keep faster
     if len(translated.keys()) > 100000:
-        os.rename('translated.json','translated.json.bak')
+        os.rename('translated.json', 'translated.json.bak')
         translated.clear()
     translated[textData] = tran_txt
     json.dump(translated, open('translated.json', 'w'), ensure_ascii=False, indent=4)
@@ -119,6 +117,7 @@ class MyTimer(QtWidgets.QWidget):
         # 信号连接到槽
         self.timer.timeout.connect(self.onTimerOut)
         self.lastTran = ''
+        self.lastTranWord = ''
 
     # 定义槽
     def onTimerOut(self):
@@ -127,12 +126,12 @@ class MyTimer(QtWidgets.QWidget):
         self.translateWord()
         self.translateSentence()
 
-
     def translateWord(self):
         cursor = self.editor.textCursor()
         textSelected = cursor.selectedText()
-        if textSelected:
+        if textSelected and self.lastTranWord != textSelected:
             source1, tran_txt1 = translateByPaper(textSelected)
+            self.lastTranWord = textSelected
             self.word_trigger.emit(tran_txt1)
 
     def translateSentence(self):
