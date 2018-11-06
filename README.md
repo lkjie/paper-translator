@@ -1,4 +1,4 @@
-# Paper-translation 论文翻译小助手
+# Paper-translate 论文翻译小助手
 	
 Automatic translation of Chinese and English papers
 
