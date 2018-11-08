@@ -83,25 +83,27 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
 
 
 def translateByPaper(textData):
-    results = textData.replace('\n', ' ').replace('- ', '')
-    if results in translated:
-        return results, translated[textData]
-    res_tran = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}).json()
-    content = res_tran.get('content', {})
-    if 'out' in content.keys():
-        tran_txt = content['out']
-    elif 'word_mean' in content.keys():
-        tran_txt = '\n'.join(content['word_mean'])
-    else:
-        return results, ''
-    # keep faster
-    if len(translated.keys()) > 100000:
-        os.rename('translated.json', 'translated.json.bak')
-        translated.clear()
-    translated[textData] = tran_txt
-    json.dump(translated, open('translated.json', 'w'), ensure_ascii=False, indent=4)
-    return results, tran_txt
-
+    try:
+        results = textData.replace('\n', ' ').replace('- ', '')
+        if results in translated:
+            return results, translated[textData]
+        res_tran = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}).json()
+        content = res_tran.get('content', {})
+        if 'out' in content.keys():
+            tran_txt = content['out']
+        elif 'word_mean' in content.keys():
+            tran_txt = '\n'.join(content['word_mean'])
+        else:
+            return results, ''
+        # keep faster
+        if len(translated.keys()) > 100000:
+            os.rename('translated.json', 'translated.json.bak')
+            translated.clear()
+        translated[textData] = tran_txt
+        json.dump(translated, open('translated.json', 'w'), ensure_ascii=False, indent=4)
+        return results, tran_txt
+    except Exception as e:
+        return '', str(e)
 
 class MyTimer(QtWidgets.QWidget):
     source_trigger = pyqtSignal(str)
