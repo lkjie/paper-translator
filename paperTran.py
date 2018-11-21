@@ -3,11 +3,12 @@
 import time, sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QGridLayout, QLabel, QPushButton
-from PyQt5.QtCore import QTimer, QThread, pyqtSignal
+from PyQt5.QtCore import QTimer, QThread, pyqtSignal, Qt
 import pyperclip
 import requests
 import json
 import os
+import re
 
 from PaperTranUI import Ui_PaperTran
 
@@ -43,8 +44,8 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
         _translate = QtCore.QCoreApplication.translate
         PaperTran.setWindowTitle(_translate("PaperTran", "论文翻译"))
         self.label.setText(_translate("PaperTran", "请输入要翻译的英文"))
-        self.pushButton.setText(_translate("PaperTran", "点击翻译"))
-        self.pushButton_2.setText(_translate("PaperTran", "清空"))
+        self.pushButton.setText(_translate("PaperTran", "(&T)点击翻译"))
+        self.pushButton_2.setText(_translate("PaperTran", "(&C)清空"))
         self.label_2.setText(_translate("PaperTran", "翻译结果"))
         self.checkBox.setText(_translate("PaperTran", "检测剪切板"))
         self.label_3.setText(_translate("PaperTran", "选择条目翻译结果"))
@@ -70,7 +71,7 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
 
     def trans(self):
         textData = self.textEdit_1.toPlainText()
-        source, tran_txt = translateByPaper(textData)
+        source, tran_txt = translate(textData)
         self.setTransText(tran_txt)
         self.setSourceText(source)
 
@@ -81,29 +82,6 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
         # edit.setFontPointSize(fontsize)
         # edit.setTextCursor(cursor)
 
-
-def translateByPaper(textData):
-    try:
-        results = textData.replace('\n', ' ').replace('- ', '')
-        if results in translated:
-            return results, translated[textData]
-        res_tran = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}).json()
-        content = res_tran.get('content', {})
-        if 'out' in content.keys():
-            tran_txt = content['out']
-        elif 'word_mean' in content.keys():
-            tran_txt = '\n'.join(content['word_mean'])
-        else:
-            return results, ''
-        # keep faster
-        if len(translated.keys()) > 100000:
-            os.rename('translated.json', 'translated.json.bak')
-            translated.clear()
-        translated[textData] = tran_txt
-        json.dump(translated, open('translated.json', 'w'), ensure_ascii=False, indent=4)
-        return results, tran_txt
-    except Exception as e:
-        return '', str(e)
 
 class MyTimer(QtWidgets.QWidget):
     source_trigger = pyqtSignal(str)
@@ -124,16 +102,15 @@ class MyTimer(QtWidgets.QWidget):
 
     # 定义槽
     def onTimerOut(self):
-        if not self.detect:
-            return
         self.translateWord()
-        self.translateSentence()
+        if self.detect:
+            self.translateSentence()
 
     def translateWord(self):
         cursor = self.editor.textCursor()
         textSelected = cursor.selectedText()
         if textSelected and self.lastTranWord != textSelected:
-            source1, tran_txt1 = translateByPaper(textSelected)
+            source1, tran_txt1 = translate(textSelected)
             self.lastTranWord = textSelected
             self.word_trigger.emit(tran_txt1)
 
@@ -142,12 +119,37 @@ class MyTimer(QtWidgets.QWidget):
         if not clipText or clipText == self.lastTran:
             return
         self.lastTran = clipText
-        source, tran_txt = translateByPaper(clipText)
+        source, tran_txt = translate(clipText)
         self.source_trigger.emit(source)
         self.tran_trigger.emit(tran_txt)
 
     def changeDetect(self):
         self.detect = not self.detect
+
+
+def translate(textData):
+    try:
+        results = textData.replace('\n', ' ').replace('- ', '')
+        results = re.sub(' +', ' ', results)
+        if results in translated:
+            return results, translated[textData]
+        res_tran = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}).json()
+        content = res_tran.get('content', {})
+        if 'out' in content.keys():
+            tran_txt = content['out']
+        elif 'word_mean' in content.keys():
+            tran_txt = '\n'.join(content['word_mean'])
+        else:
+            return results, ''
+        # keep faster
+        if len(translated.keys()) > 100000:
+            os.rename('translated.json', 'translated.json.bak')
+            translated.clear()
+        translated[textData] = tran_txt
+        json.dump(translated, open('translated.json', 'w'), ensure_ascii=False, indent=4)
+        return results, tran_txt
+    except Exception as e:
+        return '', str(e)
 
 
 if __name__ == "__main__":
