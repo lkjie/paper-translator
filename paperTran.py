@@ -115,7 +115,8 @@ class MyTimer(QtWidgets.QWidget):
             self.word_trigger.emit(tran_txt1)
 
     def translateSentence(self):
-        clipText = pyperclip.paste()
+        clipboard = QApplication.clipboard()
+        clipText = clipboard.text()
         if not clipText or clipText == self.lastTran:
             return
         self.lastTran = clipText
@@ -127,13 +128,21 @@ class MyTimer(QtWidgets.QWidget):
         self.detect = not self.detect
 
 
+def getRequests(results, timeout=3, retries=3):
+    for _ in range(retries):
+        try:
+            return requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}, timeout=timeout).json()
+        except Exception as e:
+            pass
+    return 'NETWORK ERROR!'
+
 def translate(textData):
     try:
         results = textData.replace('\n', ' ').replace('- ', '')
         results = re.sub(' +', ' ', results)
         if results in translated:
             return results, translated[textData]
-        res_tran = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}).json()
+        res_tran = getRequests(results)
         content = res_tran.get('content', {})
         if 'out' in content.keys():
             tran_txt = content['out']
