@@ -4,7 +4,6 @@ import time, sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QDialog, QGridLayout, QLabel, QPushButton
 from PyQt5.QtCore import QTimer, QThread, pyqtSignal, Qt
-import pyperclip
 import requests
 import json
 import os

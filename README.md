@@ -9,9 +9,9 @@ Automatic translation of Chinese and English papers
 ## 使用说明
 
 1. 首先需要安装python，推荐使用[anaconda][1]，因为PyQt5需要python3的支持，请选择python3版本的anaconda
-2. 安装完python后，利用python自带的包管理工具pip安装所需依赖
+2. 安装完python后，利用python自带的包管理工具pip安装所需依赖PyQt5和requests
 ```bash
-pip install clipboard pyqt5
+pip install pyqt5 requests
 ```
 3. 完成后运行目录下的py脚本即可
 ```bash
@@ -31,6 +31,8 @@ python paperTran.py
 - 自动置顶
 - 添加快捷键
 
+## BUG修复
+1. bug: 在编辑器中选择文本会卡死。解决方案：利用QApplication.clipboard替换pyperclip
 
 ## Requirement
 Based on PyQt5, python3
