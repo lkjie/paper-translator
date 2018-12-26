@@ -21,6 +21,7 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
     def __init__(self):
         super(Form, self).__init__()
         self.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('translator.ico'))
         QtCore.QMetaObject.connectSlotsByName(self)
         desktop = QtWidgets.QApplication.desktop()
         x = (desktop.width() - self.width())
@@ -98,6 +99,7 @@ class MyTimer(QtWidgets.QWidget):
         self.timer.timeout.connect(self.onTimerOut)
         self.lastTran = ''
         self.lastTranWord = ''
+        self.clipboard = QApplication.clipboard()
 
     # 定义槽
     def onTimerOut(self):
@@ -114,8 +116,7 @@ class MyTimer(QtWidgets.QWidget):
             self.word_trigger.emit(tran_txt1)
 
     def translateSentence(self):
-        clipboard = QApplication.clipboard()
-        clipText = clipboard.text()
+        clipText = self.clipboard.text()
         if not clipText or clipText == self.lastTran:
             return
         self.lastTran = clipText
@@ -133,7 +134,8 @@ def getRequests(results, timeout=3, retries=3):
             return requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': results}, timeout=timeout).json()
         except Exception as e:
             pass
-    return 'NETWORK ERROR!'
+    return {'content': {'out': results}}
+
 
 def translate(textData):
     try:

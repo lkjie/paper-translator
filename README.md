@@ -1,4 +1,4 @@
-# Paper-translate 论文翻译小助手
+# Paper-translator 论文翻译小助手
 	
 Automatic translation of Chinese and English papers
 
@@ -29,7 +29,8 @@ python paperTran.py
 - 对英文选择后，右下小窗口会出现选择英文的解释
 - 翻译的句子会以json格式保存在当前目录下translated.json文件中
 - 自动置顶
-- 添加快捷键
+- 添加快捷键：Alt+t翻译，Alt+c清空
+- 添加ico
 
 ## BUG修复
 1. bug: 在编辑器中选择文本会卡死。解决方案：利用QApplication.clipboard替换pyperclip
