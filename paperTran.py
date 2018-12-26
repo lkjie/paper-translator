@@ -9,6 +9,7 @@ import json
 import os
 import re
 
+import ico
 from PaperTranUI import Ui_PaperTran
 
 try:
@@ -21,7 +22,7 @@ class Form(QtWidgets.QWidget, Ui_PaperTran):
     def __init__(self):
         super(Form, self).__init__()
         self.setupUi(self)
-        self.setWindowIcon(QtGui.QIcon('translator.ico'))
+        self.setWindowIcon(QtGui.QIcon(':ico/translator.ico'))
         QtCore.QMetaObject.connectSlotsByName(self)
         desktop = QtWidgets.QApplication.desktop()
         x = (desktop.width() - self.width())
