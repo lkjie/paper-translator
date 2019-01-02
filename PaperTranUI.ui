@@ -22,7 +22,7 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="0">
+     <item row="4" column="0">
       <widget class="QTextEdit" name="textEdit_1">
        <property name="font">
         <font>
@@ -31,7 +31,7 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="8" column="0">
       <widget class="QTextEdit" name="textEdit_2">
        <property name="font">
         <font>
@@ -40,14 +40,14 @@
        </property>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="7" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Result</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
+     <item row="4" column="1">
       <layout class="QVBoxLayout" name="verticalLayout_1">
        <item>
         <widget class="QCheckBox" name="checkBox">
@@ -90,7 +90,7 @@
        </item>
       </layout>
      </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QTextEdit" name="textEdit_3">
        <property name="maximumSize">
         <size>
@@ -105,14 +105,7 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Query</string>
-       </property>
-      </widget>
-     </item>
-     <item row="6" column="1">
+     <item row="7" column="1">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Selected</string>
@@ -165,6 +158,13 @@
          <width>1000</width>
          <height>4000</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Query</string>
        </property>
       </widget>
      </item>
