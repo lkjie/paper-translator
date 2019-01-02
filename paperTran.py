@@ -13,10 +13,11 @@ import ico
 from PaperTranUI import Ui_PaperTran
 from Translator import Translator
 
+FILE_PATH = os.path.split(os.path.realpath(__file__))[0]
+
 
 class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
     fontRegular = False  # 字体不需要设置
-    sourceList = []
     current_id = -1
     translator = Translator()
 
@@ -43,6 +44,11 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.pushButton_3.clicked.connect(self.nextItem)
         self.pushButton_4.clicked.connect(self.lastItem)
         self.comboBox.activated.connect(self.onComboboxFunc)
+        self.RES_PATH = FILE_PATH + os.sep +'sourceList.json'
+        try:
+            self.sourceList = json.load(open(self.RES_PATH))
+        except Exception as e:
+            self.sourceList = []
 
     def retranslateUi(self, PaperTran):
         _translate = QtCore.QCoreApplication.translate
@@ -103,6 +109,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
             if textData not in self.sourceList:
                 # keep faster
                 if len(self.sourceList) > 500:
+                    self.restore(path=self.RES_PATH + 'backup')
                     self.sourceList.clear()
                     self.comboBox.clear()
                 self.sourceList.append(textData)
@@ -121,6 +128,12 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         edit.selectAll()
         edit.setFontPointSize(fontsize)
         edit.setTextCursor(cursor)
+
+    def restore(self, path=None):
+        if path:
+            json.dump(self.sourceList, open(path, 'w'), ensure_ascii=False, indent=4)
+        else:
+            json.dump(self.sourceList, open(self.RES_PATH, 'w'), ensure_ascii=False, indent=4)
 
 
 class MyTimer(QtWidgets.QWidget):
@@ -141,11 +154,20 @@ class MyTimer(QtWidgets.QWidget):
         self.lastTranWord = ''
         self.clipboard = QApplication.clipboard()
 
+        self.storeTimer = QTimer()
+        self.storeTimer.setInterval(60000)
+        self.storeTimer.start()
+        self.timer.timeout.connect(self.restoreTimeOut)
+
     # 定义槽
     def onTimerOut(self):
         self.translateWord()
         if self.detect:
             self.translateSentence()
+
+    def restoreTimeOut(self):
+        self.form.restore()
+        self.form.translator.restore()
 
     def translateWord(self):
         cursor = self.editor.textCursor()

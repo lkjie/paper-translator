@@ -16,7 +16,7 @@ class Translator:
     '''
 
     def __init__(self):
-        self.RES_PATH = FILE_PATH + 'translated.json'
+        self.RES_PATH = FILE_PATH + os.sep + 'translated.json'
         try:
             self.translated = json.load(open(self.RES_PATH))
         except Exception as e:
@@ -65,10 +65,15 @@ class Translator:
                 return ''
             # keep faster
             if len(self.translated.keys()) > 100000:
-                os.rename('translated.json', 'translated.json.bak')
+                self.restore(path=self.RES_PATH + 'backup')
                 self.translated.clear()
             self.translated[textData] = tranTxt
-            json.dump(self.translated, open(self.RES_PATH, 'w'), ensure_ascii=False, indent=4)
             return tranTxt
         except Exception as e:
             return str(e)
+
+    def restore(self, path=None):
+        if path:
+            json.dump(self.translated, open(path, 'w'), ensure_ascii=False, indent=4)
+        else:
+            json.dump(self.translated, open(self.RES_PATH, 'w'), ensure_ascii=False, indent=4)
