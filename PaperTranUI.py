@@ -86,6 +86,7 @@ class Ui_PaperTran(object):
         self.horizontalLayout.addWidget(self.pushButton_3)
         self.gridLayout.addLayout(self.horizontalLayout, 2, 1, 1, 1)
         self.comboBox = QtWidgets.QComboBox(PaperTran)
+        self.comboBox.setMaximumSize(QtCore.QSize(1000, 4000))
         self.comboBox.setObjectName("comboBox")
         self.gridLayout.addWidget(self.comboBox, 2, 0, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)

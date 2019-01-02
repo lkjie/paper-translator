@@ -36,24 +36,23 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.pushButton.clicked.connect(self.buttonTrans)
         self.pushButton_2.clicked.connect(self.textEdit_1.clear)
         self.timer = MyTimer(self.textEdit_1, parent=self)
-        self.timer.tranTrigger.connect(self.trans)
+        self.timer.tranTrigger.connect(lambda s: self.trans(textData=s))
         self.timer.wordTrigger.connect(self.setWordText)
         self.checkBox.toggle()
         self.checkBox.stateChanged.connect(self.timer.changeDetect)
         self.pushButton_3.clicked.connect(self.nextItem)
         self.pushButton_4.clicked.connect(self.lastItem)
-        self.comboBox.currentIndexChanged.connect(self.onComboboxFunc)
-
+        self.comboBox.activated.connect(self.onComboboxFunc)
 
     def retranslateUi(self, PaperTran):
         _translate = QtCore.QCoreApplication.translate
         PaperTran.setWindowTitle(_translate("PaperTran", "论文翻译"))
-        self.label.setText(_translate("PaperTran", "请输入要翻译的英文"))
+        self.label.setText(_translate("PaperTran", "请输入要翻译的字段"))
         self.pushButton.setText(_translate("PaperTran", "(&T)点击翻译"))
         self.pushButton_2.setText(_translate("PaperTran", "(&C)清空"))
         self.label_2.setText(_translate("PaperTran", "翻译结果"))
         self.checkBox.setText(_translate("PaperTran", "后台检测剪切板"))
-        self.label_3.setText(_translate("PaperTran", "选择条目翻译结果"))
+        self.label_3.setText(_translate("PaperTran", "选择条目"))
         self.pushButton_4.setText(_translate("PaperTran", "(&L)上一条"))
         self.pushButton_3.setText(_translate("PaperTran", "(&N)下一条"))
 
@@ -64,10 +63,6 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
             self.changeFontSize(self.textEdit_2)
 
     def setSourceText(self, str1):
-        # add comboBox item
-        self.sourceList.append(str1)
-        self.comboBox.update()
-
         self.textEdit_1.clear()
         self.textEdit_1.append(str1)
         if self.fontRegular:
@@ -85,11 +80,13 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
 
     def lastItem(self):
         if self.current_id > 0:
-            self.trans(transId=self.current_id - 1)
+            self.comboBox.setCurrentIndex(self.current_id - 1)
+            self.onComboboxFunc()
 
     def nextItem(self):
         if self.current_id < len(self.sourceList) - 1:
-            self.trans(transId=self.current_id + 1)
+            self.comboBox.setCurrentIndex(self.current_id + 1)
+            self.onComboboxFunc()
 
     def onComboboxFunc(self):  # 8
         self.trans(transId=self.comboBox.currentIndex())
@@ -97,23 +94,23 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
     def trans(self, textData='', transId=None):
         '''
         translate function, all translate must use this func
+        transId first
         '''
-        if not textData and not transId:
-            return
-        if transId:
+        if isinstance(transId, int) and transId >= 0:
             transText = self.sourceList[transId]
             self.current_id = transId
-        elif textData not in self.sourceList:
-            # keep faster
-            if len(self.sourceList) > 500:
-                self.sourceList.clear()
-                self.comboBox.clear()
-            self.sourceList.append(textData)
-            self.comboBox.addItem(textData)
-            self.current_id = len(self.sourceList) - 1
+        elif textData:
+            if textData not in self.sourceList:
+                # keep faster
+                if len(self.sourceList) > 500:
+                    self.sourceList.clear()
+                    self.comboBox.clear()
+                self.sourceList.append(textData)
+                self.comboBox.addItem(textData)
+                self.current_id = len(self.sourceList) - 1
             transText = textData
         else:
-            transText = textData
+            return
         source = self.translator.textClean(transText)
         self.setSourceText(source)
         tranTxt = self.translator.translate(source)
