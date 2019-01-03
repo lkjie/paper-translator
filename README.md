@@ -4,7 +4,7 @@ Automatic translation of Chinese and English papers
 
 自动翻译中英文论文，复制即可翻译
 
-![Alt text](./doc/1541495491986.png)
+![example](./doc/example.png)
 
 ## 使用说明
 
@@ -31,6 +31,7 @@ python paperTran.py
 - 自动置顶
 - 添加快捷键：Alt+t翻译，Alt+c清空
 - 添加ico
+- 保存历史记录，可以上下切换
 
 ## BUG修复
 1. bug: 在编辑器中选择文本会卡死。解决方案：利用QApplication.clipboard替换pyperclip

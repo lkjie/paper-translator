@@ -45,10 +45,20 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.pushButton_4.clicked.connect(self.lastItem)
         self.comboBox.activated.connect(self.onComboboxFunc)
         self.RES_PATH = FILE_PATH + os.sep +'sourceList.json'
+
+        # cut combo strings
+        self.strcut = lambda str1: str1[:77] + '...' if len(str1) > 80 else str1
+        self.strscut = lambda strs:[self.strcut(str1) for str1 in strs]
+
         try:
             self.sourceList = json.load(open(self.RES_PATH))
+            self.comboBox.addItems(self.strscut(self.sourceList))
         except Exception as e:
             self.sourceList = []
+
+        # char format
+        self.defaultCharFormat = self.textEdit_1.currentCharFormat()
+
 
     def retranslateUi(self, PaperTran):
         _translate = QtCore.QCoreApplication.translate
@@ -70,6 +80,8 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
 
     def setSourceText(self, str1):
         self.textEdit_1.clear()
+        if self.textEdit_1.currentCharFormat() != self.defaultCharFormat:
+            self.textEdit_1.setCurrentCharFormat(self.defaultCharFormat)
         self.textEdit_1.append(str1)
         if self.fontRegular:
             self.changeFontSize(self.textEdit_1)
@@ -85,13 +97,13 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.trans(textData)
 
     def lastItem(self):
-        if self.current_id > 0:
-            self.comboBox.setCurrentIndex(self.current_id - 1)
+        if self.comboBox.currentIndex() > 0:
+            self.comboBox.setCurrentIndex(self.comboBox.currentIndex() - 1)
             self.onComboboxFunc()
 
     def nextItem(self):
-        if self.current_id < len(self.sourceList) - 1:
-            self.comboBox.setCurrentIndex(self.current_id + 1)
+        if self.comboBox.currentIndex() < len(self.sourceList) - 1:
+            self.comboBox.setCurrentIndex(self.comboBox.currentIndex() + 1)
             self.onComboboxFunc()
 
     def onComboboxFunc(self):  # 8
@@ -104,17 +116,20 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         '''
         if isinstance(transId, int) and transId >= 0:
             transText = self.sourceList[transId]
-            self.current_id = transId
+            self.comboBox.setCurrentIndex(transId)
         elif textData:
             if textData not in self.sourceList:
                 # keep faster
-                if len(self.sourceList) > 500:
+                if len(self.sourceList) > 50:
                     self.restore(path=self.RES_PATH + 'backup')
                     self.sourceList.clear()
                     self.comboBox.clear()
                 self.sourceList.append(textData)
-                self.comboBox.addItem(textData)
-                self.current_id = len(self.sourceList) - 1
+                self.comboBox.addItem(self.strcut(textData))
+                self.comboBox.setCurrentIndex(len(self.sourceList) - 1)
+            else:
+                index = self.sourceList.index(textData)
+                self.comboBox.setCurrentIndex(index)
             transText = textData
         else:
             return
