@@ -38,6 +38,11 @@ class Ui_PaperTran(object):
         self.gridLayout.addWidget(self.label_2, 7, 0, 1, 1)
         self.verticalLayout_1 = QtWidgets.QVBoxLayout()
         self.verticalLayout_1.setObjectName("verticalLayout_1")
+        self.comboBox_2 = QtWidgets.QComboBox(PaperTran)
+        self.comboBox_2.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.comboBox_2.setEditable(False)
+        self.comboBox_2.setObjectName("comboBox_2")
+        self.verticalLayout_1.addWidget(self.comboBox_2)
         self.checkBox = QtWidgets.QCheckBox(PaperTran)
         self.checkBox.setObjectName("checkBox")
         self.verticalLayout_1.addWidget(self.checkBox)
@@ -89,6 +94,10 @@ class Ui_PaperTran(object):
         self.label = QtWidgets.QLabel(PaperTran)
         self.label.setObjectName("label")
         self.gridLayout.addWidget(self.label, 3, 0, 1, 1)
+        self.label_4 = QtWidgets.QLabel(PaperTran)
+        self.label_4.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.label_4.setObjectName("label_4")
+        self.gridLayout.addWidget(self.label_4, 3, 1, 1, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
 
         self.retranslateUi(PaperTran)
@@ -105,4 +114,5 @@ class Ui_PaperTran(object):
         self.pushButton_4.setText(_translate("PaperTran", "(&L)Last"))
         self.pushButton_3.setText(_translate("PaperTran", "(&N)Next"))
         self.label.setText(_translate("PaperTran", "Query"))
+        self.label_4.setText(_translate("PaperTran", "Engine:"))
 

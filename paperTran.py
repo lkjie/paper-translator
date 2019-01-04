@@ -12,6 +12,7 @@ import re
 import ico
 from PaperTranUI import Ui_PaperTran
 from Translator import Translator
+from configures import *
 
 FILE_PATH = os.path.split(os.path.realpath(__file__))[0]
 
@@ -20,6 +21,8 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
     fontRegular = False  # 字体不需要设置
     current_id = -1
     translator = Translator()
+    engine_name_dict = {'金山词霸': 'ciba',
+                   '有道': 'youdao'}
 
     def __init__(self):
         super(PaperTran, self).__init__()
@@ -44,21 +47,26 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.pushButton_3.clicked.connect(self.nextItem)
         self.pushButton_4.clicked.connect(self.lastItem)
         self.comboBox.activated.connect(self.onComboboxFunc)
-        self.RES_PATH = FILE_PATH + os.sep +'sourceList.json'
+        self.RES_PATH = FILE_PATH + os.sep + 'sourceList.json'
 
         # cut combo strings
-        self.strcut = lambda str1: str1[:77] + '...' if len(str1) > 80 else str1
-        self.strscut = lambda strs:[self.strcut(str1) for str1 in strs]
+        self.strcut = lambda str1: str1[:COMBO_STRLEN - 3] + '...' if len(str1) > COMBO_STRLEN else str1
+        self.strscut = lambda strs: [self.strcut(str1) for str1 in strs]
 
+        self.sourceList = []
+        self.sourceList_cut = []
         try:
             self.sourceList = json.load(open(self.RES_PATH))
-            self.comboBox.addItems(self.strscut(self.sourceList))
+            self.sourceList_cut = self.strscut(self.sourceList)
+            self.comboBox.addItems(self.sourceList_cut)
         except Exception as e:
-            self.sourceList = []
-
+            pass
         # char format
         self.defaultCharFormat = self.textEdit_1.currentCharFormat()
 
+        # setting translate engine
+        self.comboBox_2.addItems(self.engine_name_dict.keys())
+        self.comboBox_2.activated.connect(self.selectEngine)
 
     def retranslateUi(self, PaperTran):
         _translate = QtCore.QCoreApplication.translate
@@ -71,6 +79,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.label_3.setText(_translate("PaperTran", "选择条目"))
         self.pushButton_4.setText(_translate("PaperTran", "(&L)上一条"))
         self.pushButton_3.setText(_translate("PaperTran", "(&N)下一条"))
+        self.label_4.setText(_translate("PaperTran", "翻译引擎："))
 
     def setTransText(self, str1):
         self.textEdit_2.clear()
@@ -106,8 +115,12 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
             self.comboBox.setCurrentIndex(self.comboBox.currentIndex() + 1)
             self.onComboboxFunc()
 
-    def onComboboxFunc(self):  # 8
+    def onComboboxFunc(self):
         self.trans(transId=self.comboBox.currentIndex())
+
+    def selectEngine(self):
+        engine = self.comboBox_2.currentText()
+        self.translator.engine = self.engine_name_dict.get(engine, 'ciba')
 
     def trans(self, textData='', transId=None):
         '''
@@ -120,7 +133,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         elif textData:
             if textData not in self.sourceList:
                 # keep faster
-                if len(self.sourceList) > 50:
+                if len(self.sourceList) > COMBO_SIZE:
                     self.restore(path=self.RES_PATH + 'backup')
                     self.sourceList.clear()
                     self.comboBox.clear()
@@ -128,8 +141,17 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
                 self.comboBox.addItem(self.strcut(textData))
                 self.comboBox.setCurrentIndex(len(self.sourceList) - 1)
             else:
-                index = self.sourceList.index(textData)
-                self.comboBox.setCurrentIndex(index)
+                idx = self.sourceList.index(textData)
+                self.sourceList.pop(idx)
+                self.sourceList.append(textData)
+                try:
+                    # sometimes error
+                    self.sourceList_cut.pop(idx)
+                    self.sourceList_cut.append(self.strcut(textData))
+                except Exception as e:
+                    self.sourceList_cut = self.strscut(self.sourceList)
+                self.comboBox.clear()
+                self.comboBox.addItems(self.strscut(self.sourceList))
             transText = textData
         else:
             return
@@ -161,7 +183,7 @@ class MyTimer(QtWidgets.QWidget):
         self.editor = sender
         self.form = parent
         self.timer = QTimer()
-        self.timer.setInterval(1000)
+        self.timer.setInterval(TRANS_INTERVAL)
         self.timer.start()
         # 信号连接到槽
         self.timer.timeout.connect(self.onTimerOut)
@@ -170,7 +192,7 @@ class MyTimer(QtWidgets.QWidget):
         self.clipboard = QApplication.clipboard()
 
         self.storeTimer = QTimer()
-        self.storeTimer.setInterval(60000)
+        self.storeTimer.setInterval(STORE_INTERVAL)
         self.storeTimer.start()
         self.timer.timeout.connect(self.restoreTimeOut)
 
@@ -201,7 +223,7 @@ class MyTimer(QtWidgets.QWidget):
         :return: 
         '''
         clipText = self.clipboard.text()
-        if not clipText or clipText == self.lastTran or self.isActiveWindow():
+        if not clipText or clipText in self.lastTran or self.isActiveWindow():
             return
         self.lastTran = clipText
         self.tranTrigger.emit(clipText)
