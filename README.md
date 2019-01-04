@@ -32,6 +32,7 @@ python paperTran.py
 - 添加快捷键：Alt+t翻译，Alt+c清空
 - 添加ico
 - 保存历史记录，可以上下切换
+- 有道翻译和金山词霸翻译两种选择
 
 ## BUG修复
 1. bug: 在编辑器中选择文本会卡死。解决方案：利用QApplication.clipboard替换pyperclip
