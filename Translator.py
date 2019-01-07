@@ -8,6 +8,7 @@ import os
 import re
 import hashlib
 import time
+import execjs
 
 from configures import *
 
@@ -32,6 +33,50 @@ class CiBa():
                 res = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': content}, timeout=timeout).json()
                 res = res.get('content', {})
                 return res
+            except Exception as e:
+                pass
+        return {}
+
+
+class Google():
+    '''
+    谷歌的翻译接口，请自带翻墙代理，在下面proxies中配置
+    '''
+    proxies = {
+        'http': 'socks5://127.0.0.1:1080',
+        'https': 'socks5://127.0.0.1:1080'
+    }
+
+    def __init__(self):
+        # get TKK
+        self.update_tkk()
+
+    def update_tkk(self):
+        page = requests.get('https://translate.google.com/', proxies=self.proxies)
+        self.tkk = re.search("tkk:'(.+?)'", page.text).group(1)
+        self.tkk_updatetime = time.time()
+
+    def request(self, content, timeout=3, retries=3):
+        '''
+        请求网页得到翻译结果
+        :param content: 
+        :param timeout: 每次请求的超时秒数
+        :param retries: 最大重试次数，请求失败后有效
+        :return: {'out':'翻译结果','word_mean':'单词解释'} 两者选一
+        '''
+        if time.time() - self.tkk_updatetime > 3600:
+            self.update_tkk()
+        for _ in range(retries):
+            try:
+                tk = execjs.compile(open(r"translate_google.js").read()).call('Ho', content, self.tkk)
+                # sl:原始语言 tl:目标语言
+                url = 'https://translate.google.com/translate_a/single?client=webapp&sl=auto&tl=zh-CN&hl=en&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=2&ssel=0&tsel=4&kc=1&tk=%s&q=%s' % (
+                tk, content)
+                res_trans = requests.get(url, proxies=self.proxies, timeout=timeout)
+                res_trans = res_trans.json()[0]
+                res_trans_target = [i[0] for i in res_trans[:-1]]
+                res_trans_target = ''.join(res_trans_target)
+                return dict(out=res_trans_target)
             except Exception as e:
                 pass
         return {}
@@ -108,12 +153,17 @@ class Translator:
     '''
     ciba = CiBa()
     youdao = YouDao()
+    google = Google()
     engine = 'ciba'
 
     def __init__(self):
         self.RES_PATH = FILE_PATH + os.sep + 'translated.json'
         self.engine_dict = {'ciba': self.ciba,
-                            'youdao': self.youdao}
+                            'youdao': self.youdao,
+                            'google': self.google}
+        self.engine_name_dict = {'金山词霸': 'ciba',
+                            '有道': 'youdao',
+                                 '谷歌翻译': 'google'}
         try:
             self.translated = json.load(open(self.RES_PATH))
         except Exception as e:

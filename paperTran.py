@@ -21,8 +21,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
     fontRegular = False  # 字体不需要设置
     current_id = -1
     translator = Translator()
-    engine_name_dict = {'金山词霸': 'ciba',
-                   '有道': 'youdao'}
+
 
     def __init__(self):
         super(PaperTran, self).__init__()
@@ -65,7 +64,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.defaultCharFormat = self.textEdit_1.currentCharFormat()
 
         # setting translate engine
-        self.comboBox_2.addItems(self.engine_name_dict.keys())
+        self.comboBox_2.addItems(self.translator.engine_name_dict.keys())
         self.comboBox_2.activated.connect(self.selectEngine)
 
     def retranslateUi(self, PaperTran):
@@ -120,7 +119,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
 
     def selectEngine(self):
         engine = self.comboBox_2.currentText()
-        self.translator.engine = self.engine_name_dict.get(engine, 'ciba')
+        self.translator.engine = self.translator.engine_name_dict.get(engine, 'ciba')
 
     def trans(self, textData='', transId=None):
         '''
@@ -138,18 +137,15 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
                     self.sourceList.clear()
                     self.comboBox.clear()
                 self.sourceList.append(textData)
+                self.sourceList_cut.append(self.strcut(textData))
                 self.comboBox.addItem(self.strcut(textData))
                 self.comboBox.setCurrentIndex(len(self.sourceList) - 1)
             else:
                 idx = self.sourceList.index(textData)
                 self.sourceList.pop(idx)
                 self.sourceList.append(textData)
-                try:
-                    # sometimes error
-                    self.sourceList_cut.pop(idx)
-                    self.sourceList_cut.append(self.strcut(textData))
-                except Exception as e:
-                    self.sourceList_cut = self.strscut(self.sourceList)
+                self.sourceList_cut.pop(idx)
+                self.sourceList_cut.append(self.strcut(textData))
                 self.comboBox.clear()
                 self.comboBox.addItems(self.strscut(self.sourceList))
             transText = textData
