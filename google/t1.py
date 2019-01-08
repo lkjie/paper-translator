@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__ = 'liwenjie'
+__author__ = 'lkjie'
 import execjs
 
 '''

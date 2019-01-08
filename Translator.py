@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-__author__ = 'liwenjie'
+__author__ = 'lkjie'
 import requests
 import json
 import os
@@ -30,7 +30,7 @@ class CiBa():
         '''
         for _ in range(retries):
             try:
-                res = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': content}, timeout=timeout).json()
+                res = requests.post('http://fy.iciba.com/ajax.php?a=fy', data={'w': content}, **REQUEST_PARAMS).json()
                 res = res.get('content', {})
                 return res
             except Exception as e:
@@ -42,17 +42,13 @@ class Google():
     '''
     谷歌的翻译接口，请自带翻墙代理，在下面proxies中配置
     '''
-    proxies = {
-        'http': 'socks5://127.0.0.1:1080',
-        'https': 'socks5://127.0.0.1:1080'
-    }
 
     def __init__(self):
         # get TKK
         self.update_tkk()
 
     def update_tkk(self):
-        page = requests.get('https://translate.google.com/', proxies=self.proxies)
+        page = requests.get('https://translate.google.cn/', **REQUEST_PARAMS)
         self.tkk = re.search("tkk:'(.+?)'", page.text).group(1)
         self.tkk_updatetime = time.time()
 
@@ -70,9 +66,9 @@ class Google():
             try:
                 tk = execjs.compile(open(r"translate_google.js").read()).call('Ho', content, self.tkk)
                 # sl:原始语言 tl:目标语言
-                url = 'https://translate.google.com/translate_a/single?client=webapp&sl=auto&tl=zh-CN&hl=en&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=2&ssel=0&tsel=4&kc=1&tk=%s&q=%s' % (
+                url = 'https://translate.google.cn/translate_a/single?client=webapp&sl=auto&tl=zh-CN&hl=en&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=2&ssel=0&tsel=4&kc=1&tk=%s&q=%s' % (
                 tk, content)
-                res_trans = requests.get(url, proxies=self.proxies, timeout=timeout)
+                res_trans = requests.get(url, **REQUEST_PARAMS)
                 res_trans = res_trans.json()[0]
                 res_trans_target = [i[0] for i in res_trans[:-1]]
                 res_trans_target = ''.join(res_trans_target)
@@ -109,13 +105,13 @@ class YouDao():
                     # "Connection": "keep-alive",
                     # "Content-Length": str(250+len(content)),
                     # "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                    "Cookie": "DICT_UGC=be3af0da19b5c5e6aa4e17bd8d90b28a|; OUTFOX_SEARCH_USER_ID=999720164@222.209.234.53; JSESSIONID=abcbyX_HzllVigt06ZzAw; OUTFOX_SEARCH_USER_ID_NCOO=502315678.6834709; _ntes_nnid=930a587d9b936139c3bb0bc492d08c6e,1540178821422; ___rl__test__cookies=" + ts,
                     # "Host": "fanyi.youdao.com",
                     # "Origin": "http://fanyi.youdao.com",
                     "Referer": "http://fanyi.youdao.com/",
                     "User-Agent": "5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36",
                     # "X-Requested-With": "XMLHttpRequest"
                 }
+                header['Cookie'] = YOUDAO_COOKIES + ts
                 bv = hashlib.md5(header['User-Agent'].encode()).hexdigest()
                 data = {
                     "action": "FY_BY_REALTIME",
@@ -134,7 +130,7 @@ class YouDao():
                     "version": "2.1"
                 }
 
-                res = requests.post(url=url, data=data, headers=header, timeout=timeout).json()
+                res = requests.post(url=url, data=data, headers=header, **REQUEST_PARAMS).json()
                 translateResult = res.get('translateResult', [])
                 out = ''
                 if translateResult:
