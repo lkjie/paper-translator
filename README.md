@@ -30,7 +30,6 @@ python paperTran.py
 - 翻译的句子会以json格式保存在当前目录下translated.json文件中
 - 自动置顶
 - 添加快捷键：Alt+t翻译，Alt+c清空
-- 添加ico
 - 保存历史记录，可以上下切换
 - 有道翻译、金山词霸、谷歌翻译三种翻译引擎
 
@@ -42,7 +41,7 @@ Based on PyQt5, python3, pyexecjs(google translate need)
 
 install by pip just like:
 ```bash
-pip install clipboard pyqt5 pyexecjs
+pip install pyqt5 pyexecjs
 ```
 
 ## How to run
@@ -58,5 +57,7 @@ python paperTran.py
 - saved translated sentences in translated.json file
 - auto top
 - add shortcuts
+- history saved, you can check it
+- the Youdao, the Kingsoft and the Google three translation engines
 
 [1]: https://www.anaconda.com/download/
