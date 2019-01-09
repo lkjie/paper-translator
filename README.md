@@ -37,11 +37,11 @@ python paperTran.py
 1. bug: 在编辑器中选择文本会卡死。解决方案：利用QApplication.clipboard替换pyperclip
 
 ## Requirement
-Based on PyQt5, python3, pyexecjs(google translate need)
+Based on python3, PyQt5, requests, pyexecjs(google translate need)
 
 install by pip just like:
 ```bash
-pip install pyqt5 pyexecjs
+pip install pyqt5 requests pyexecjs
 ```
 
 ## How to run
