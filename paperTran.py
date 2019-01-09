@@ -74,7 +74,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.pushButton.setText(_translate("PaperTran", "(&T)点击翻译"))
         self.pushButton_2.setText(_translate("PaperTran", "(&C)清空"))
         self.label_2.setText(_translate("PaperTran", "翻译结果"))
-        self.checkBox.setText(_translate("PaperTran", "后台检测剪切板"))
+        self.checkBox.setText(_translate("PaperTran", "检测剪切板"))
         self.label_3.setText(_translate("PaperTran", "选择条目"))
         self.pushButton_4.setText(_translate("PaperTran", "(&L)上一条"))
         self.pushButton_3.setText(_translate("PaperTran", "(&N)下一条"))

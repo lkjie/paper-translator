@@ -9,6 +9,7 @@ import re
 import hashlib
 import time
 import execjs
+import urllib
 
 from configures import *
 
@@ -20,7 +21,7 @@ class CiBa():
     金山词霸的翻译接口，推荐使用，感觉挺准的，优于谷歌有道
     '''
 
-    def request(self, content, timeout=3, retries=3):
+    def request(self, content, retries=3):
         '''
         请求网页得到翻译结果
         :param content: 
@@ -52,7 +53,7 @@ class Google():
         self.tkk = re.search("tkk:'(.+?)'", page.text).group(1)
         self.tkk_updatetime = time.time()
 
-    def request(self, content, timeout=3, retries=3):
+    def request(self, content, retries=3):
         '''
         请求网页得到翻译结果
         :param content: 
@@ -65,6 +66,7 @@ class Google():
         for _ in range(retries):
             try:
                 tk = execjs.compile(open(r"translate_google.js").read()).call('Ho', content, self.tkk)
+                content = urllib.parse.quote(content)
                 # sl:原始语言 tl:目标语言
                 url = 'https://translate.google.cn/translate_a/single?client=webapp&sl=auto&tl=zh-CN&hl=en&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&otf=2&ssel=0&tsel=4&kc=1&tk=%s&q=%s' % (
                 tk, content)
@@ -84,7 +86,7 @@ class YouDao():
     注意：有道翻译是反爬的，需要定时更换cookie，cookie请自行更换，从浏览器中复制translate_o请求中的cookie即可
     '''
 
-    def request(self, content, timeout=3, retries=3):
+    def request(self, content, retries=3):
         '''
         请求网页得到翻译结果
         :param content: 
