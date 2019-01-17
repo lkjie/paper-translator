@@ -55,7 +55,7 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
         self.sourceList = []
         self.sourceList_cut = []
         try:
-            self.sourceList = json.load(open(self.RES_PATH))
+            self.sourceList = json.load(open(self.RES_PATH, encoding='utf8'))
             self.sourceList_cut = self.strscut(self.sourceList)
             self.comboBox.addItems(self.sourceList_cut)
         except Exception as e:

@@ -163,7 +163,7 @@ class Translator:
                             '有道': 'youdao',
                                  '谷歌翻译': 'google'}
         try:
-            self.translated = json.load(open(self.RES_PATH))
+            self.translated = json.load(open(self.RES_PATH, encoding='utf8'))
         except Exception as e:
             self.translated = {k: {} for k in self.engine_dict.keys()}
 
@@ -218,6 +218,6 @@ class Translator:
 
     def restore(self, path=None):
         if path:
-            json.dump(self.translated, open(path, 'w'), ensure_ascii=False, indent=4)
+            json.dump(self.translated, open(path, 'w', encoding='utf8'), ensure_ascii=False, indent=4)
         else:
-            json.dump(self.translated, open(self.RES_PATH, 'w'), ensure_ascii=False, indent=4)
+            json.dump(self.translated, open(self.RES_PATH, 'w', encoding='utf8'), ensure_ascii=False, indent=4)
