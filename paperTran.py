@@ -130,28 +130,16 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
             transText = self.sourceList[transId]
             self.comboBox.setCurrentIndex(transId)
         elif textData:
-            if textData not in self.sourceList:
-                # keep faster
-                if len(self.sourceList) > COMBO_SIZE:
-                    self.restore(path=self.RES_PATH + 'backup')
-                    self.sourceList.clear()
-                    self.comboBox.clear()
-                self.sourceList.append(textData)
-                self.sourceList_cut.append(self.strcut(textData))
-                self.comboBox.addItem(self.strcut(textData))
-                self.comboBox.setCurrentIndex(len(self.sourceList) - 1)
+            if len(self.sourceList) > COMBO_SIZE:
+                self.restore(path=self.RES_PATH + 'backup')
+                sourceList = self.sourceList[:-int(COMBO_SIZE * 0.5)]
+                self.comboSetItems(sourceList)
             else:
-                idx = self.sourceList.index(textData)
-                self.sourceList.pop(idx)
-                self.sourceList.append(textData)
-                self.sourceList_cut.pop(idx)
-                self.sourceList_cut.append(self.strcut(textData))
-                self.comboBox.clear()
-                self.comboBox.addItems(self.strscut(self.sourceList))
+                self.comboDropItem(textData)
+                self.comboAddItem(textData)
             transText = textData
         else:
             return
-        source = self.translator.textClean(transText)
         self.setSourceText(source)
         tranTxt = self.translator.translate(source)
         self.setTransText(tranTxt)
@@ -167,6 +155,27 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
             json.dump(self.sourceList, open(path, 'w'), ensure_ascii=False, indent=4)
         else:
             json.dump(self.sourceList, open(self.RES_PATH, 'w'), ensure_ascii=False, indent=4)
+
+    def comboSetItems(self, sourceList):
+        self.sourceList = sourceList
+        self.sourceList_cut = self.strscut(self.sourceList)
+        self.comboBox.clear()
+        self.comboBox.addItems(self.sourceList_cut)
+
+    def comboAddItem(self, textData):
+        self.sourceList.append(textData)
+        self.sourceList_cut.append(self.strcut(textData))
+        self.comboBox.addItem(self.strcut(textData))
+        self.comboBox.setCurrentIndex(len(self.sourceList) - 1)
+
+    def comboDropItem(self, textData):
+        if textData not in self.sourceList:
+            return
+        idx = self.sourceList.index(textData)
+        self.sourceList.pop(idx)
+        self.sourceList_cut.pop(idx)
+        self.comboBox.clear()
+        self.comboBox.addItems(self.sourceList_cut)
 
 
 class MyTimer(QtWidgets.QWidget):
@@ -219,6 +228,7 @@ class MyTimer(QtWidgets.QWidget):
         :return: 
         '''
         clipText = self.clipboard.text()
+        clipText = self.translator.textClean(clipText)
         if not clipText or clipText in self.lastTran or self.isActiveWindow():
             return
         self.lastTran = clipText
