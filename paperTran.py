@@ -140,8 +140,8 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
             transText = textData
         else:
             return
-        self.setSourceText(source)
-        tranTxt = self.translator.translate(source)
+        self.setSourceText(transText)
+        tranTxt = self.translator.translate(transText)
         self.setTransText(tranTxt)
 
     def changeFontSize(self, edit, fontsize=15):
@@ -228,7 +228,7 @@ class MyTimer(QtWidgets.QWidget):
         :return: 
         '''
         clipText = self.clipboard.text()
-        clipText = self.translator.textClean(clipText)
+        clipText = self.form.translator.textClean(clipText)
         if not clipText or clipText in self.lastTran or self.isActiveWindow():
             return
         self.lastTran = clipText
