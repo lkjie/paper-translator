@@ -152,9 +152,9 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
 
     def restore(self, path=None):
         if path:
-            json.dump(self.sourceList, open(path, 'w'), ensure_ascii=False, indent=4)
+            json.dump(self.sourceList, open(path, 'w', encoding='utf8'), ensure_ascii=False, indent=4)
         else:
-            json.dump(self.sourceList, open(self.RES_PATH, 'w'), ensure_ascii=False, indent=4)
+            json.dump(self.sourceList, open(self.RES_PATH, 'w', encoding='utf8'), ensure_ascii=False, indent=4)
 
     def comboSetItems(self, sourceList):
         self.sourceList = sourceList
