@@ -102,7 +102,8 @@ class PaperTran(QtWidgets.QWidget, Ui_PaperTran):
 
     def buttonTrans(self):
         textData = self.textEdit_1.toPlainText()
-        self.trans(textData)
+        textData_clean = self.translator.textClean(textData)
+        self.trans(textData_clean)
 
     def lastItem(self):
         if self.comboBox.currentIndex() > 0:

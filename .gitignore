@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 translated.json
 sourceList.json
+.idea
