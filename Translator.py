@@ -98,8 +98,8 @@ class YouDao():
             try:
                 url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
                 ts = str(int(time.time() * 1000))
-                salt = ts + "5"
-                sign = hashlib.md5(("fanyideskweb" + content + salt + "p09@Bn{h02_BIEe]$P^nG").encode()).hexdigest()
+                salt = ts + "4"
+                sign = hashlib.md5(("fanyideskweb" + content + salt + "n%A-rKaT5fb[Gy?;N5@Tj").encode()).hexdigest()
                 header = {
                     # "Accept": "application/json, text/javascript, */*; q=0.01",
                     # "Accept-Encoding": "gzip, deflate",
@@ -137,8 +137,9 @@ class YouDao():
                 out = ''
                 if translateResult:
                     out = ''.join([e.get('tgt', "") for e in translateResult[0]])
-                smartResult = ''.join(res.get('smartResult', {}).get('entries', []))
-                out = (out + smartResult).replace('\r\n', '\n')
+                # smartResult = ''.join(res.get('smartResult', {}).get('entries', []))
+                # out = (out + smartResult).replace('\r\n', '\n')
+                out = out.replace('\r\n', '\n')
                 return dict(out=out)
             except Exception as e:
                 pass
@@ -221,3 +222,10 @@ class Translator:
             json.dump(self.translated, open(path, 'w', encoding='utf8'), ensure_ascii=False, indent=4)
         else:
             json.dump(self.translated, open(self.RES_PATH, 'w', encoding='utf8'), ensure_ascii=False, indent=4)
+
+
+if __name__ == '__main__':
+    t = Translator()
+    t.engine = 'google'
+    res = t.translate("The function scipy.optimize.fmin_bfgs allows the user to input both a target function and a gradient. Since I have an 8-core machine on my desktop, I thought I could parallelize the solver by running")
+    print(res)
